@@ -12,7 +12,7 @@ const fetchComments = () => {
       Authorization: token,
     },
   }).then((response) => {
-    let loadingComments = document.getElementById('comments-loader');
+     let loadingComments = document.getElementById('comments-loader');
     loadingComments.style.display = 'none';
 
     if(response.status === 401) {
@@ -40,7 +40,7 @@ const fetchComments = () => {
     });
   };
 
-   // fetchComments();
+    //fetchComments();
 
 
   const postComment = () => {
