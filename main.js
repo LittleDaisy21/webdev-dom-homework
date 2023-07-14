@@ -1,7 +1,7 @@
 
 export { initLikeButton, initEditButton, replyToComment, time };
 import renderUserComments from "./renderComments.js";
-import { fetchComments, postComment } from "./api.js";
+import { fetchComments } from "./api.js";
 
 export const buttonElement = document.getElementById("add-button");
 export const deleteButtonElement = document.getElementById("delete-button");
@@ -90,73 +90,5 @@ export  const commentElements = document.querySelectorAll(".comment");
     }
 
     
-
-     const addNewElementToList = () => {
-
-
-      // Validation data check
-
-      nameInputElement.classList.remove('error');
-       if (nameInputElement.value === "") {
-        nameInputElement.classList.add('error');
-        return;
-      }
-      commentInputElement.classList.remove('error');
-      if (commentInputElement.value === "") {
-        commentInputElement.classList.add('error');
-        return;
-      }
-
-      // Post from API
-
-        postComment();
-
-      //  renderUserComments();
-        
-     };
-
-
-     buttonElement.addEventListener("click", addNewElementToList);
-
-    // Validation form check for the button
-
-    const validateForm = () => {
-      if (nameInputElement.value === "") {
-        buttonElement.disabled = true;
-        return;
-      }
-  
-      if (commentInputElement.value === "") {
-        buttonElement.disabled = true;
-        return;
-      }
-
-      buttonElement.disabled = false;
-    };
-
-    nameInputElement.addEventListener("input", validateForm);
-    commentInputElement.addEventListener("input", validateForm);
-
-    // Enter button
-
-    document.addEventListener("keyup", (event) => {
-      console.log("keyup", `${event.code}`);
-      if (event.code === 'Enter') {
-        addNewElementToList();
-      }
-    });
-
-    // Delete button
-
-    deleteButtonElement.addEventListener("click", () => {
-      // const listComments = document.getElementById("list");
-      // listComments.lastChild.remove();
-
-      const comments = document.getElementById("list");
-      const lastIndex = comments.innerHTML.lastIndexOf('<li class="comment"');
-      comments.innerHTML = comments.innerHTML.slice(0, lastIndex);
-      initLikeButton();
-      initEditButton();
-    });
     
    

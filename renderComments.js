@@ -1,5 +1,6 @@
 const listElement = document.getElementById("list");
 import { initLikeButton, initEditButton, replyToComment } from "./main.js";
+import { postComment } from "./api.js";
 
 
 const renderUserComments = (userComments) => {
@@ -53,7 +54,7 @@ const appEl = document.getElementById("app");
 const appHtml = `
 
 <div class="container">
-<p id="comments-loader">Пожалуйста, подождите, загружаю комментарии...</p>
+<p id="comments-loader" class="hidden">Пожалуйста, подождите, загружаю комментарии...</p>
 <ul id="list" class="comments">
   <!-- The list is rendering from JS --> 
 ${userCommentsHtml}
@@ -77,7 +78,7 @@ ${userCommentsHtml}
   </div>
   
   <div class="login-form">
-    <button id="add-button" class="login-button">Войти</button>
+    <button id="log-button" class="login-button">Войти</button>
   </div>
 </div>
 
@@ -103,6 +104,81 @@ ${userCommentsHtml}
 
 
     appEl.innerHTML = appHtml;
+
+    const buttonElement = document.getElementById("add-button");
+
+    const addNewElementToList = () => {
+
+
+      // Validation data check
+
+      nameInputElement.classList.remove('error');
+       if (nameInputElement.value === "") {
+        nameInputElement.classList.add('error');
+        return;
+      }
+      commentInputElement.classList.remove('error');
+      if (commentInputElement.value === "") {
+        commentInputElement.classList.add('error');
+        return;
+      }
+
+      // Post from API
+
+        postComment();
+
+      //  renderUserComments();
+        
+     };
+
+
+     buttonElement.addEventListener("click", addNewElementToList);
+     const nameInputElement = document.getElementById("name-input");
+     const commentInputElement = document.getElementById("comment-input");
+     const deleteButtonElement = document.getElementById("delete-button");
+
+         // Validation form check for the button
+
+    const validateForm = () => {
+      if (nameInputElement.value === "") {
+        buttonElement.disabled = true;
+        return;
+      }
+  
+      if (commentInputElement.value === "") {
+        buttonElement.disabled = true;
+        return;
+      }
+
+      buttonElement.disabled = false;
+    };
+
+    nameInputElement.addEventListener("input", validateForm);
+    commentInputElement.addEventListener("input", validateForm);
+
+
+    // Enter button
+
+    document.addEventListener("keyup", (event) => {
+      console.log("keyup", `${event.code}`);
+      if (event.code === 'Enter') {
+        addNewElementToList();
+      }
+    });
+
+    // Delete button
+
+    deleteButtonElement.addEventListener("click", () => {
+      // const listComments = document.getElementById("list");
+      // listComments.lastChild.remove();
+
+      const comments = document.getElementById("list");
+      const lastIndex = comments.innerHTML.lastIndexOf('<li class="comment"');
+      comments.innerHTML = comments.innerHTML.slice(0, lastIndex);
+      initLikeButton();
+      initEditButton();
+    });
+
 
     initLikeButton(userComments);
     initEditButton(userComments);
