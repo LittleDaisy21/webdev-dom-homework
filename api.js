@@ -48,6 +48,8 @@ const fetchComments = () => {
     loadingComments.classList.remove('hidden');
     let newComment = document.getElementById('new-comment-section');
     newComment.style.display = 'none';
+    const commentInputElement = document.getElementById("comment-input");
+    const nameInputElement = document.getElementById("name-input");
        return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
         method: "POST",
         headers: {

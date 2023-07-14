@@ -1,7 +1,7 @@
 
 export { initLikeButton, initEditButton, replyToComment, time };
 import renderUserComments from "./renderComments.js";
-import { fetchComments } from "./api.js";
+import { fetchComments, postComment } from "./api.js";
 
 export const buttonElement = document.getElementById("add-button");
 export const deleteButtonElement = document.getElementById("delete-button");
@@ -89,6 +89,5 @@ export  const commentElements = document.querySelectorAll(".comment");
     return fullDate;
     }
 
-    
     
    
