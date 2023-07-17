@@ -1,6 +1,6 @@
 
 //export { time };
-import renderUserComments from "./renderComments.js";
+import renderApp from "./renderComments.js";
 import { fetchComments } from "./api.js";
 
 const buttonElement = document.getElementById("add-button");
@@ -23,10 +23,12 @@ const commentElements = document.querySelectorAll(".comment");
 
       // Data from API
     
-      fetchComments();
+      //fetchComments();
 
 
-      renderUserComments(userComments);
+      renderApp(userComments);
+
+    //  renderApp(userComments);
 
 
   

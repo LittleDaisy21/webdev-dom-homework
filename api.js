@@ -1,9 +1,10 @@
-import renderUserComments from "./renderComments.js";
+import renderApp from "./renderComments.js";
 
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
 
 let token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
+token = null;
 
 const fetchComments = () => {
     return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
@@ -13,7 +14,8 @@ const fetchComments = () => {
     },
   }).then((response) => {
      let loadingComments = document.getElementById('comments-loader');
-    loadingComments.style.display = 'none';
+      //loadingComments.style.display = 'none';
+      loadingComments.classList.add('hidden');
 
     if(response.status === 401) {
       //token = prompt('Type the correct password');
@@ -36,7 +38,7 @@ const fetchComments = () => {
         };
     });
 
-      renderUserComments(userComments);
+      renderApp(userComments);
     });
   };
 
@@ -96,6 +98,18 @@ const fetchComments = () => {
       });
     };
 
+
+  //  export function deleteTodo({ token, id }) {
+  //    return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments + id, {
+  //      method: "DELETE",
+  //      headers: {
+  //        Authorization: token,
+  //      }),
+  //    })
+  //    .then((response) => {
+  //      return response.json();
+  //    });
+  //  }
     
     export { fetchComments, postComment };
 

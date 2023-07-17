@@ -1,10 +1,51 @@
 const listElement = document.getElementById("list");
-import { postComment } from "./api.js";
+import { fetchComments, postComment } from "./api.js";
+
+let token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
+token = null;
+
+const renderApp = (userComments) => {
+
+  const appEl = document.getElementById("app");
+
+ if(!token) {
+  const appHtml = `
+
+<div class="container">
+
+<div id="new-comment-section" class="add-form">
+  <h3 class="login-form-title">Форма входа</h3>
+  <div class="login-form">
+    <p class="login-form-text">Логин</p> 
+    <input id="login-input" value=""
+      type="text"
+      class="add-form-name"
+      />
+      <br> <br>
+      <p class="login-form-text">Пароль</p>
+    <input id="password-input" value=""
+      type="text"
+      class="add-form-name"
+      />
+  </div>
+  
+  <div class="login-form">
+    <button id="log-button" class="login-button">Войти</button>
+  </div>
+</div>
+`;
 
 
-const renderUserComments = (userComments) => {
+    appEl.innerHTML = appHtml;
 
-const appEl = document.getElementById("app");
+    document.getElementById('log-button').addEventListener('click', () => {
+      token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
+      fetchComments();
+    })
+
+    return;
+ }  
+
 
   let userCommentsHtml = userComments.map((userComment, index) => {
     if (!userComments[index].isEdit) {
@@ -53,35 +94,12 @@ const appEl = document.getElementById("app");
 const appHtml = `
 
 <div class="container">
-<p id="comments-loader" class="hidden">Пожалуйста, подождите, загружаю комментарии...</p>
+<p id="comments-loader" class="visible">Пожалуйста, подождите, загружаю комментарии...</p>
 <ul id="list" class="comments">
   <!-- The list is rendering from JS --> 
 ${userCommentsHtml}
 </ul>
 <p id="new-comment-loader" class="hidden">Комментарий добавляется...</p>
-
-<div id="new-comment-section" class="add-form">
-  <h3 class="login-form-title">Форма входа</h3>
-  <div class="login-form">
-    <p class="login-form-text">Логин</p> 
-    <input id="login-input" value=""
-      type="text"
-      class="add-form-name"
-      />
-      <br> <br>
-      <p class="login-form-text">Пароль</p>
-    <input id="password-input" value=""
-      type="text"
-      class="add-form-name"
-      />
-  </div>
-  
-  <div class="login-form">
-    <button id="log-button" class="login-button">Войти</button>
-  </div>
-</div>
-
-
 <div id="new-comment-section" class="add-form">
   <input id="name-input" value=""
     type="text"
@@ -123,7 +141,7 @@ ${userCommentsHtml}
                 } else {
                   userComments[index].isEdit = false;
                 }
-                renderUserComments(userComments);
+                renderApp(userComments);
               });
             }
           };
@@ -145,7 +163,7 @@ ${userCommentsHtml}
                 userComments[index].active = "";
                 userComments[index].likeCounter -= 1;
               }
-              renderUserComments(userComments);
+              renderApp(userComments);
             });
           }
         };
@@ -243,4 +261,4 @@ ${userCommentsHtml}
     replyToComment(userComments);
   };
 
-  export default renderUserComments;
+  export default renderApp;
