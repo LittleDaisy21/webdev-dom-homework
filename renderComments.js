@@ -94,7 +94,7 @@ const renderApp = (userComments) => {
 const appHtml = `
 
 <div class="container">
-<p id="comments-loader" class="visible">Пожалуйста, подождите, загружаю комментарии...</p>
+<p id="comments-loader" class="hidden">Пожалуйста, подождите, загружаю комментарии...</p>
 <ul id="list" class="comments">
   <!-- The list is rendering from JS --> 
 ${userCommentsHtml}

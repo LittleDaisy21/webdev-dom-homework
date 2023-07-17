@@ -14,8 +14,7 @@ const fetchComments = () => {
     },
   }).then((response) => {
      let loadingComments = document.getElementById('comments-loader');
-      //loadingComments.style.display = 'none';
-      loadingComments.classList.add('hidden');
+    // loadingComments.classList.add('hidden');
 
     if(response.status === 401) {
       //token = prompt('Type the correct password');
