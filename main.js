@@ -28,8 +28,6 @@ const commentElements = document.querySelectorAll(".comment");
 
       renderApp(userComments);
 
-    //  renderApp(userComments);
-
 
   
 

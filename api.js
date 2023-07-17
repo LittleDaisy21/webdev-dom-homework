@@ -6,7 +6,7 @@ const commentInputElement = document.getElementById("comment-input");
 let token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
 token = null;
 
-const fetchComments = () => {
+export function fetchComments ({ token }) {
     return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
     method: "GET",
     headers: {
@@ -44,7 +44,7 @@ const fetchComments = () => {
     //fetchComments();
 
 
-  const postComment = () => {
+  export function postComment ({ token }) {
     let loadingComments = document.getElementById('new-comment-loader');
     loadingComments.classList.remove('hidden');
     let newComment = document.getElementById('new-comment-section');
@@ -98,18 +98,20 @@ const fetchComments = () => {
     };
 
 
-  //  export function deleteTodo({ token, id }) {
-  //    return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments + id, {
-  //      method: "DELETE",
-  //      headers: {
-  //        Authorization: token,
-  //      }),
-  //    })
-  //    .then((response) => {
-  //      return response.json();
-  //    });
-  //  }
+//  export function deleteComment({ token, id }) {
+//    const id = deleteButton.dataset.id;
+//    return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments + id, {
+//      method: "DELETE",
+//      headers: {
+//        Authorization: token,
+//      },
+//    })
+//    .then((response) => {
+//      return response.json();
+//    })
+//  .then((response) => {
+//    return fetchComments();
+//  });
     
-    export { fetchComments, postComment };
 
   
