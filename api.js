@@ -96,3 +96,25 @@ export function loginUser ({ login, password }) {
       };
     });
   }
+
+
+  export function registerUser ({ login, password, name }) {
+    return fetch("https://wedev-api.sky.pro/api/user", {
+     method: "POST",
+     body: JSON.stringify({ 
+       login,
+       password,
+       name,
+     }),
+   }).then((response) => {
+     if (response.status === 500) {
+       alert("Сервер сломался, попробуй позже");
+       throw new Error("Сервер сломался, попробуй позже");
+     } 
+     else if (response.status === 400) { 
+       throw new Error("Такой пользователь уже существует"); 
+     } else {
+       return response.json();
+     };
+   });
+ }
