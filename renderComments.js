@@ -26,6 +26,9 @@ const fetchCommentsAndRender = () => {
   };
 
 const renderApp = (userComments) => {
+
+
+  
   const appEl = document.getElementById("app");
 
  if(!token) {
