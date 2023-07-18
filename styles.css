@@ -208,3 +208,14 @@ body {
     cursor: pointer;
     text-align: center;
   }
+
+  .toggle-button {
+    margin-top: 24px;
+    font-size: 15px;
+    padding: 10px 20px;
+    background-color: #cd7ceead;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    text-align: center;
+  }
