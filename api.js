@@ -77,7 +77,7 @@ export function fetchComments ({ token }) {
 
 // https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/user/README.md
 
-export function login ({ login, password }) {
+export function loginUser ({ login, password }) {
      return fetch("https://wedev-api.sky.pro/api/user/login", {
       method: "POST",
       body: JSON.stringify({ 
@@ -89,9 +89,8 @@ export function login ({ login, password }) {
         alert("Сервер сломался, попробуй позже");
         throw new Error("Сервер сломался, попробуй позже");
       } 
-      else if (response.status === 400) {
-        alert("Имя и комментарий должны быть не короче 3 символов"); 
-        throw new Error("Имя и комментарий должны быть не короче 3 символов"); 
+      else if (response.status === 400) { 
+        throw new Error("Неверный логин или пароль"); 
       } else {
         return response.json();
       };
