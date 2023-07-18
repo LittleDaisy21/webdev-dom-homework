@@ -1,47 +1,43 @@
 const listElement = document.getElementById("list");
 import { fetchComments, postComment } from "./api.js";
+import { renderLoginComponent } from "./components/login-component.js";
+import { userComments } from "./main.js";
 
 let token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
 token = null;
 
-const renderApp = (userComments) => {
+const fetchCommentsAndRender = () => {
+  return fetchComments({ token })
+    .then((responseData) => {
+      let userComments = responseData.comments.map((comment) => {
+      return {
+        name: comment.author.name,
+        date: new Date(comment.date).toLocaleString().slice(0, -3),
+        comment: comment.text,
+        likeCounter: 0,
+        isLiked: false,
+        active: "",
+        isEdit: false,
+        };
+    });
 
+      renderApp(userComments);
+    });
+  };
+
+const renderApp = (userComments) => {
   const appEl = document.getElementById("app");
 
  if(!token) {
-  const appHtml = `
 
-<div class="container">
+    renderLoginComponent({ 
+      appEl, 
+      setToken: (newToken) => {
+      token = newToken;
+    },
 
-<div id="new-comment-section" class="add-form">
-  <h3 class="login-form-title">Форма входа</h3>
-  <div class="login-form">
-    <p class="login-form-text">Логин</p> 
-    <input id="login-input" value=""
-      type="text"
-      class="add-form-name"
-      />
-      <br> <br>
-      <p class="login-form-text">Пароль</p>
-    <input id="password-input" value=""
-      type="text"
-      class="add-form-name"
-      />
-  </div>
-  
-  <div class="login-form">
-    <button id="log-button" class="login-button">Войти</button>
-  </div>
-</div>
-`;
-
-
-    appEl.innerHTML = appHtml;
-
-    document.getElementById('log-button').addEventListener('click', () => {
-      token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
-      fetchComments( {token} );
-    })
+    fetchCommentsAndRender,
+    });
 
     return;
  }  
@@ -168,10 +164,40 @@ ${userCommentsHtml}
           }
         };
      
-
+    // Post from API
     const addNewElementToList = () => {
 
+      let loadingComments = document.getElementById('new-comment-loader');
+      loadingComments.classList.remove('hidden');
+      let newComment = document.getElementById('new-comment-section');
+      newComment.style.display = 'none';
 
+      postComment({
+        text: commentInputElement.value, 
+        name: nameInputElement.value,
+        token,
+      })
+      .then((response) => {
+        return fetchCommentsAndRender();
+      })
+      .then((response) => {
+        let loadingComments = document.getElementById('new-comment-loader');
+        loadingComments.classList.add('hidden');
+        let newComment = document.getElementById('new-comment-section');
+        newComment.style.display = '';
+        nameInputElement.value = "";
+        commentInputElement.value = "";
+      })
+      .catch((error) => {
+        if (error.message !== "Сервер сломался, попробуй позже" && error.message !== "Имя и комментарий должны быть не короче 3 символов") 
+        {
+          alert("Кажется, у вас сломался интернет, попробуйте позже");
+        }
+        let loadingComments = document.getElementById('new-comment-loader');
+        loadingComments.classList.add('hidden');
+        let newComment = document.getElementById('new-comment-section');
+        newComment.style.display = '';
+      });
       // Validation data check
 
       nameInputElement.classList.remove('error');
@@ -184,12 +210,6 @@ ${userCommentsHtml}
         commentInputElement.classList.add('error');
         return;
       }
-
-      // Post from API
-
-        postComment({ token });
-
-      //  renderUserComments();
         
      };
 
@@ -252,8 +272,6 @@ ${userCommentsHtml}
           });
         }
       };
-
-    
 
 
     initLikeButton(userComments);

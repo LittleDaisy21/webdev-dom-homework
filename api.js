@@ -17,38 +17,20 @@ export function fetchComments ({ token }) {
     // loadingComments.classList.add('hidden');
 
     if(response.status === 401) {
-      //token = prompt('Type the correct password');
+      
       //fetchComments();
       throw new Error('No authorization')
     }
 
   return response.json();
   })
-  .then((responseData) => {
-      let userComments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleString().slice(0, -3),
-        comment: comment.text,
-        likeCounter: 0,
-        isLiked: false,
-        active: "",
-        isEdit: false,
-        };
-    });
-
-      renderApp(userComments);
-    });
-  };
+}
 
     //fetchComments();
 
 
-  export function postComment ({ token }) {
-    let loadingComments = document.getElementById('new-comment-loader');
-    loadingComments.classList.remove('hidden');
-    let newComment = document.getElementById('new-comment-section');
-    newComment.style.display = 'none';
+  export function postComment ({ text, token }) {
+
     const commentInputElement = document.getElementById("comment-input");
     const nameInputElement = document.getElementById("name-input");
        return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
@@ -74,27 +56,6 @@ export function fetchComments ({ token }) {
           return response.json();
         };
       })
-      .then((response) => {
-        return fetchComments();
-      })
-      .then((response) => {
-        let loadingComments = document.getElementById('new-comment-loader');
-        loadingComments.classList.add('hidden');
-        let newComment = document.getElementById('new-comment-section');
-        newComment.style.display = '';
-        nameInputElement.value = "";
-        commentInputElement.value = "";
-      })
-      .catch((error) => {
-        if (error.message !== "Сервер сломался, попробуй позже" && error.message !== "Имя и комментарий должны быть не короче 3 символов") 
-        {
-          alert("Кажется, у вас сломался интернет, попробуйте позже");
-        }
-        let loadingComments = document.getElementById('new-comment-loader');
-        loadingComments.classList.add('hidden');
-        let newComment = document.getElementById('new-comment-section');
-        newComment.style.display = '';
-      });
     };
 
 
