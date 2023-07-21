@@ -9,7 +9,7 @@ export function fetchComments () {
     method: "GET",
   }).then((response) => {
      let loadingComments = document.getElementById('comments-loader');
-    // loadingComments.classList.add('hidden');
+    // loadingComments.style.display = 'none';
 
     if(response.status === 401) {
       
@@ -31,6 +31,12 @@ export function fetchComments () {
 
     const commentInputElement = document.getElementById("comment-input");
     const nameInputElement = document.getElementById("name-input");
+
+    let loadingComments = document.getElementById('new-comment-loader');
+    loadingComments.classList.remove('hidden');
+    let newComment = document.getElementById('new-comment-section');
+    newComment.style.display = 'none';
+
        return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
         method: "POST",
         headers: {

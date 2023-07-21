@@ -33,6 +33,7 @@ const renderApp = (userComments, list) => {
 
 let userCommentsHtml = userComments.map((userComment, index) => list(userComment, index)).join("");
 let appHtml = `<div class="container">
+<p id="comments-loader">Пожалуйста, подождите, загружаю комментарии...</p>
 <ul id="list" class="comments">
 ${userCommentsHtml}
 </ul>
@@ -67,7 +68,7 @@ ${userCommentsHtml}
 
           // Edit button
 
-          const initEditButton = () => {
+          const initEditButton = (userComments) => {
             const editButtonElements = document.querySelectorAll(".edit-button");
             for (const editButtonElement of editButtonElements) {
               const index = editButtonElement.dataset.index;
@@ -85,7 +86,7 @@ ${userCommentsHtml}
 
          // Like button
 
-         const initLikeButton = () => {
+         const initLikeButton = (userComments) => {
           const likeButtonElements = document.querySelectorAll(".like-button");
           for (const likeButtonElement of likeButtonElements) {
             const index = likeButtonElement.dataset.index;
@@ -106,7 +107,7 @@ ${userCommentsHtml}
         };
      
     // Post from API
-    const addNewElementToList = () => {
+    const addNewElementToList = (userComments) => {
 
       let loadingComments = document.getElementById('new-comment-loader');
       loadingComments.classList.remove('hidden');
