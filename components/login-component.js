@@ -1,12 +1,41 @@
 import { loginUser, registerUser } from "../api.js";
+import { fetchCommentsAndRender } from "../main.js";
 
-export function renderLoginComponent({ appEl, setToken, fetchCommentsAndRender }) {
+export function renderLoginComponent({ userComments, appEl, setToken, setName, fetchComments }) {
     let isLoginMode = true;
 
+   const userCommentsHtmlNotEdit = userComments.map((userComment, index) => {
+        return `<li class="comment" data-index="${index}" data-name="${userComment.name}" data-text="${userComment.comment}">
+        <div class="comment-header">
+          <div>${userComment.name}</div>
+          <div>${userComment.date}</div>
+        </div>
+        <div class="comment-body">
+          <div style="white-space: pre-line" class="comment-text">
+            ${userComment.comment}
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span class="likes-counter">${userComment.likeCounter}</span>
+            <button data-index="${index}" class="like-button ${userComment.active}"></button>
+          </div>
+        </div>
+      </li>`;
+    }).join('');
+   let appHtml = `<div class="container">
+    <ul class="comments">
+     ${userCommentsHtmlNotEdit}
+    </ul>  
+    <div>Чтобы добавить комментарий, <a  id="login-link" class="form-link" href="#">авторизуйтесь</a></div>
+    </div>`;
+  
+    appEl.innerHTML = appHtml;
+
+    document.getElementById('login-link').addEventListener('click', () => {
     const renderForm = () => {
-        const appHtml = `
+      let  appHtml = `
         <div class="container">
-        
         <div id="new-comment-section" class="add-form">
           <h3 class="login-form-title">Форма ${isLoginMode ? "входа" : "регистрации"}</h3>
           <div class="login-form">
@@ -30,12 +59,15 @@ export function renderLoginComponent({ appEl, setToken, fetchCommentsAndRender }
           <div class="login-form">
             <button id="login-button" class="login-button">${isLoginMode ? "Войти" : "Зарегистрироваться"}</button>
             <button id="toggle-button" class="toggle-button">Перейти ${isLoginMode ? "к регистрации" : "ко входу"}</button>
-          </div>
         </div>
-        `;
+        </div>`;
         
+        appEl.innerHTML = appHtml;
+        document.getElementById('toggle-button').addEventListener('click', () => {
+          isLoginMode = !isLoginMode;
+          renderForm();
+      });
         
-            appEl.innerHTML = appHtml;
         
             document.getElementById('login-button').addEventListener('click', () => {
             if(isLoginMode) {
@@ -57,10 +89,19 @@ export function renderLoginComponent({ appEl, setToken, fetchCommentsAndRender }
                    password: password,
                  }).then((user) => {
                    setToken(`Bearer ${user.user.token}`);
+                   setName(user.user.name);
                    fetchCommentsAndRender();
                  }).catch(error => {
-                   alert(error.message);
-                 });
+                  if (error.message === "Сервер сломался") {
+                    alert("Сервер сломался, попробуйте позже");
+                    fetchComments();
+                  } else if (error.message === "Нет авторизации") {          
+                      alert(error.message);
+                    } else {
+                      alert('Кажется, у вас сломался интернет, попробуйте позже');
+                      console.log(error);
+                    }
+               });
             } else {
                const login = document.getElementById('login-input').value;
                const name = document.getElementById('name-input').value;
@@ -78,7 +119,7 @@ export function renderLoginComponent({ appEl, setToken, fetchCommentsAndRender }
       
                if(!password) {
                   alert('Введите пароль')
-                  return;
+                //  return;
                }
       
                 registerUser ({
@@ -89,17 +130,21 @@ export function renderLoginComponent({ appEl, setToken, fetchCommentsAndRender }
                   setToken(`Bearer ${user.user.token}`);
                   fetchCommentsAndRender();
                 }).catch(error => {
-                  alert(error.message);
-                });
-            }
+                  if (error.message === "Сервер сломался") {
+                    alert("Сервер сломался, попробуйте позже");
+                    fetchComments();
+                  } else if (error.message === "Нет авторизации") {          
+                      alert(error.message);
+                    } else {
+                      alert('Кажется, у вас сломался интернет, попробуйте позже');
+                      console.log(error);
+                    }
+            });
+            
+      };
 
-            });
-    
-    
-            document.getElementById('toggle-button').addEventListener('click', () => {
-                isLoginMode = !isLoginMode;
-                renderForm();
-            });
-    };
+  });
+       }
     renderForm();
+});
 }

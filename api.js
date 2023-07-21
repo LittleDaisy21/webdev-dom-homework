@@ -1,17 +1,12 @@
-import renderApp from "./renderComments.js";
-
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
 
 let token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
 token = null;
 
-export function fetchComments ({ token }) {
+export function fetchComments () {
     return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
     method: "GET",
-    headers: {
-      Authorization: token,
-    },
   }).then((response) => {
      let loadingComments = document.getElementById('comments-loader');
     // loadingComments.classList.add('hidden');
@@ -19,8 +14,11 @@ export function fetchComments ({ token }) {
     if(response.status === 401) {
       
       //fetchComments();
-      throw new Error('No authorization')
-    }
+      throw new Error('Нет авторизации')
+    } else if (response.status === 500) {
+      alert("Сервер сломался, попробуй позже");
+      throw new Error("Сервер сломался, попробуй позже");
+    } 
 
   return response.json();
   })

@@ -1,6 +1,7 @@
 
 //export { time };
-import renderApp from "./renderComments.js";
+import { renderApp } from "./renderComments.js";
+import { getCommentsList } from "./listComments.js";
 import { fetchComments } from "./api.js";
 
 const buttonElement = document.getElementById("add-button");
@@ -15,21 +16,42 @@ const commentElements = document.querySelectorAll(".comment");
 
 
     // Data in array
+   let userComments = [];
 
-
-   export let userComments = [];
-
-
-
-      // Data from API
-    
-      //fetchComments();
-
-
-      renderApp(userComments);
-
-
+   const fetchCommentsAndRender = () => {
+    return fetchComments()
+      .then((responseData) => {
+        let userComments = responseData.comments.map((comment) => {
+        return {
+          name: comment.author.name,
+          date: new Date(comment.date).toLocaleString().slice(0, -3),
+          comment: comment.text,
+          likeCounter: 0,
+          isLiked: false,
+          active: "",
+          isEdit: false,
+          };
+      });
+    return renderApp(userComments, getCommentsList);
+      })
+      .then ((response) => {
+      //  comments-loader.style.display = none;
+      })
+      .catch((error) => {
+        if (error.message === "Сервер сломался") {
+          alert("Сервер сломался, попробуйте позже");
+          fetchComments();
+        } else if (error.message === "Нет авторизации") {          
+            console.log(error);
+          } else {
+            alert('Кажется, у вас сломался интернет, попробуйте позже');
+            console.log(error);
+          }
+      });
+      };
   
+    fetchCommentsAndRender();
+
 
     // Time function
     
@@ -40,5 +62,5 @@ const commentElements = document.querySelectorAll(".comment");
   //  return fullDate;
  //   }
 
-    
+    export { fetchCommentsAndRender }
    

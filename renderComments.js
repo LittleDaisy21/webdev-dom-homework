@@ -1,101 +1,39 @@
 const listElement = document.getElementById("list");
 import { fetchComments, postComment } from "./api.js";
 import { renderLoginComponent } from "./components/login-component.js";
-import { userComments } from "./main.js";
+import { getCommentsList } from "./listComments.js";
+import { fetchCommentsAndRender } from "./main.js"
+
 
 let token = 'Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck';
 token = null;
 
-const fetchCommentsAndRender = () => {
-  return fetchComments({ token })
-    .then((responseData) => {
-      let userComments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleString().slice(0, -3),
-        comment: comment.text,
-        likeCounter: 0,
-        isLiked: false,
-        active: "",
-        isEdit: false,
-        };
-    });
-
-      renderApp(userComments);
-    });
-  };
-
-const renderApp = (userComments) => {
-
-
+const renderApp = (userComments, list) => {
   
   const appEl = document.getElementById("app");
 
  if(!token) {
 
     renderLoginComponent({ 
-      appEl, 
+      appEl,
+      userComments,
       setToken: (newToken) => {
       token = newToken;
+    },
+
+    setName: (newName) => {
+      name = newName; 
     },
 
     fetchCommentsAndRender,
     });
 
-    return;
- }  
+  //  return;
+ }  else {
 
-
-  let userCommentsHtml = userComments.map((userComment, index) => {
-    if (!userComments[index].isEdit) {
-      userComments.isEdit = true;
-      return `<li class="comment" data-index="${index}" data-name="${userComment.name}" data-text="${userComment.comment}">
-      <div class="comment-header">
-        <div>${userComment.name}</div>
-        <div>${userComment.date}</div>
-      </div>
-      <div class="comment-body">
-        <div style="white-space: pre-line" class="comment-text">
-          ${userComment.comment}
-        </div>
-      </div>
-      <button data-index="${index}" class="edit-button" type="button">Редактировать</button>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">${userComment.likeCounter}</span>
-          <button data-index="${index}" class="like-button ${userComment.active}"></button>
-        </div>
-      </div>
-    </li>`;
-    } else {
-      userComments.isEdit = false;
-      return `<li class="comment">
-      <div class="comment-header">
-        <div>${userComment.name}</div>
-        <div>${userComment.date}</div>
-      </div>
-      <div class="comment-body">
-        <div style="white-space: pre-line" class="comment-text">
-          <textarea class="comment-text-edit">${userComment.comment}</textarea>
-        </div>
-      </div>
-      <button data-index="${index}" class="edit-button" type="button">Сохранить</button>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">${userComment.likeCounter}</span>
-          <button data-index="${index}" class="like-button ${userComment.active}"></button>
-        </div>
-      </div>
-    </li>`;
-    }
-  }).join('');
-
-const appHtml = `
-
-<div class="container">
-<p id="comments-loader" class="hidden">Пожалуйста, подождите, загружаю комментарии...</p>
+let userCommentsHtml = userComments.map((userComment, index) => list(userComment, index)).join("");
+let appHtml = `<div class="container">
 <ul id="list" class="comments">
-  <!-- The list is rendering from JS --> 
 ${userCommentsHtml}
 </ul>
 <p id="new-comment-loader" class="hidden">Комментарий добавляется...</p>
@@ -129,7 +67,7 @@ ${userCommentsHtml}
 
           // Edit button
 
-          const initEditButton = (userComments) => {
+          const initEditButton = () => {
             const editButtonElements = document.querySelectorAll(".edit-button");
             for (const editButtonElement of editButtonElements) {
               const index = editButtonElement.dataset.index;
@@ -140,14 +78,14 @@ ${userCommentsHtml}
                 } else {
                   userComments[index].isEdit = false;
                 }
-                renderApp(userComments);
+                renderApp(userComments, getCommentsList);
               });
             }
           };
 
          // Like button
 
-         const initLikeButton = (userComments) => {
+         const initLikeButton = () => {
           const likeButtonElements = document.querySelectorAll(".like-button");
           for (const likeButtonElement of likeButtonElements) {
             const index = likeButtonElement.dataset.index;
@@ -162,7 +100,7 @@ ${userCommentsHtml}
                 userComments[index].active = "";
                 userComments[index].likeCounter -= 1;
               }
-              renderApp(userComments);
+              renderApp(userComments, getCommentsList);
             });
           }
         };
@@ -282,4 +220,6 @@ ${userCommentsHtml}
     replyToComment(userComments);
   };
 
-  export default renderApp;
+}
+
+  export { renderApp };
