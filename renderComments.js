@@ -31,9 +31,8 @@ const renderApp = (userComments, list) => {
   //  return;
  }  else {
 
-let userCommentsHtml = userComments.map((userComment, index) => list(userComment, index)).join("");
-let appHtml = `<div class="container">
-<p id="comments-loader">Пожалуйста, подождите, загружаю комментарии...</p>
+const userCommentsHtml = userComments.map((userComment, index) => list(userComment, index)).join("");
+const appHtml = `<div class="container">
 <ul id="list" class="comments">
 ${userCommentsHtml}
 </ul>
@@ -62,8 +61,8 @@ ${userCommentsHtml}
 
     const buttonElement = document.getElementById("add-button");
     const nameInputElement = document.getElementById("name-input");
-     const commentInputElement = document.getElementById("comment-input");
-     const deleteButtonElement = document.getElementById("delete-button");
+    const commentInputElement = document.getElementById("comment-input");
+    const deleteButtonElement = document.getElementById("delete-button");
 
 
           // Edit button

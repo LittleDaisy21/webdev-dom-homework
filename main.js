@@ -12,7 +12,7 @@ const commentInputElement = document.getElementById("comment-input");
 const likeButtonElements = document.querySelectorAll(".like-button");
 const editButtonElements = document.querySelectorAll(".edit-button");
 const commentElements = document.querySelectorAll(".comment");
-
+const commentsLoading = document.querySelector('.data-loading');
 
 
     // Data in array

@@ -6,6 +6,18 @@ body {
     visibility: hidden;
   }
 
+  .data-loading {
+    font-family: Helvetica;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px;
+    padding-bottom: 200px;
+    background: #202020;
+    min-height: 100vh;
+  }
+
   .container {
     font-family: Helvetica;
     color: #ffffff;
