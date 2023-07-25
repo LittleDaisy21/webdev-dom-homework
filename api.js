@@ -1,43 +1,45 @@
-import renderUserComments from "./renderComments.js";
-
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
 
-const fetchComments = () => {
-    return fetch("https://webdev-hw-api.vercel.app/api/v1/mariia-goppa/comments", {
+
+export function fetchComments () {
+    return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
     method: "GET",
   }).then((response) => {
-    let loadingComments = document.getElementById('comments-loader');
-    loadingComments.style.display = 'none';
+     let loadingComments = document.getElementById('comments-loader');
+    // loadingComments.style.display = 'none';
+
+    if(response.status === 401) {
+      
+      //fetchComments();
+      throw new Error('Нет авторизации')
+    } else if (response.status === 500) {
+      alert("Сервер сломался, попробуй позже");
+      throw new Error("Сервер сломался, попробуй позже");
+    } 
+
   return response.json();
   })
-  .then((responseData) => {
-      let userComments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleString().slice(0, -3),
-        comment: comment.text,
-        likeCounter: 0,
-        isLiked: false,
-        active: "",
-        isEdit: false,
-        };
-    });
+}
 
-      renderUserComments(userComments);
-    });
-  };
-
-   // fetchComments();
+    //fetchComments();
 
 
-  const postComment = () => {
+  export function postComment ({ text, token }) {
+
+    const commentInputElement = document.getElementById("comment-input");
+    const nameInputElement = document.getElementById("name-input");
+
     let loadingComments = document.getElementById('new-comment-loader');
     loadingComments.classList.remove('hidden');
     let newComment = document.getElementById('new-comment-section');
     newComment.style.display = 'none';
-       return fetch("https://webdev-hw-api.vercel.app/api/v1/mariia-goppa/comments", {
+
+       return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments", {
         method: "POST",
+        headers: {
+          Authorization: token,
+        },
         body: JSON.stringify({ 
           text: commentInputElement.value, 
           name: nameInputElement.value,
@@ -56,30 +58,65 @@ const fetchComments = () => {
           return response.json();
         };
       })
-      .then((response) => {
-        return fetchComments();
-      })
-      .then((response) => {
-        let loadingComments = document.getElementById('new-comment-loader');
-        loadingComments.classList.add('hidden');
-        let newComment = document.getElementById('new-comment-section');
-        newComment.style.display = '';
-        nameInputElement.value = "";
-        commentInputElement.value = "";
-      })
-      .catch((error) => {
-        if (error.message !== "Сервер сломался, попробуй позже" && error.message !== "Имя и комментарий должны быть не короче 3 символов") 
-        {
-          alert("Кажется, у вас сломался интернет, попробуйте позже");
-        }
-        let loadingComments = document.getElementById('new-comment-loader');
-        loadingComments.classList.add('hidden');
-        let newComment = document.getElementById('new-comment-section');
-        newComment.style.display = '';
-      });
     };
 
-    
-    export { fetchComments, postComment };
 
-  
+//  export function deleteComment({ token, id }) {
+//    const id = deleteButton.dataset.id;
+//    return fetch("https://wedev-api.sky.pro/api/v2/mariia-goppa/comments + id, {
+//      method: "DELETE",
+//      headers: {
+//        Authorization: token,
+//      },
+//    })
+//    .then((response) => {
+//      return response.json();
+//    })
+//  .then((response) => {
+//    return fetchComments();
+//  });
+    
+
+// https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/user/README.md
+
+export function loginUser ({ login, password }) {
+     return fetch("https://wedev-api.sky.pro/api/user/login", {
+      method: "POST",
+      body: JSON.stringify({ 
+        login,
+        password,
+      }),
+    }).then((response) => {
+      if (response.status === 500) {
+        alert("Сервер сломался, попробуй позже");
+        throw new Error("Сервер сломался, попробуй позже");
+      } 
+      else if (response.status === 400) { 
+        throw new Error("Неверный логин или пароль"); 
+      } else {
+        return response.json();
+      };
+    });
+  }
+
+
+  export function registerUser ({ login, password, name }) {
+    return fetch("https://wedev-api.sky.pro/api/user", {
+     method: "POST",
+     body: JSON.stringify({ 
+       login,
+       password,
+       name,
+     }),
+   }).then((response) => {
+     if (response.status === 500) {
+       alert("Сервер сломался, попробуй позже");
+       throw new Error("Сервер сломался, попробуй позже");
+     } 
+     else if (response.status === 400) { 
+       throw new Error("Такой пользователь уже существует"); 
+     } else {
+       return response.json();
+     };
+   });
+ }

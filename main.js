@@ -1,162 +1,66 @@
 
-export { initLikeButton, initEditButton, replyToComment, time };
-import renderUserComments from "./renderComments.js";
-import { fetchComments, postComment } from "./api.js";
+//export { time };
+import { renderApp } from "./renderComments.js";
+import { getCommentsList } from "./listComments.js";
+import { fetchComments } from "./api.js";
 
-export const buttonElement = document.getElementById("add-button");
-export const deleteButtonElement = document.getElementById("delete-button");
-export const listElement = document.getElementById("list");
-export const nameInputElement = document.getElementById("name-input");
-export const commentInputElement = document.getElementById("comment-input");
-export  const likeButtonElements = document.querySelectorAll(".like-button");
-export  const editButtonElements = document.querySelectorAll(".edit-button");
-export  const commentElements = document.querySelectorAll(".comment");
-
+const buttonElement = document.getElementById("add-button");
+const deleteButtonElement = document.getElementById("delete-button");
+const listElement = document.getElementById("list");
+const nameInputElement = document.getElementById("name-input");
+const commentInputElement = document.getElementById("comment-input");
+const likeButtonElements = document.querySelectorAll(".like-button");
+const editButtonElements = document.querySelectorAll(".edit-button");
+const commentElements = document.querySelectorAll(".comment");
+const commentsLoading = document.querySelector('.data-loading');
 
 
     // Data in array
+   let userComments = [];
 
-
-   export let userComments = [];
-
-         // Like button
-
-         const initLikeButton = (userComments) => {
-          const likeButtonElements = document.querySelectorAll(".like-button");
-          for (const likeButtonElement of likeButtonElements) {
-            const index = likeButtonElement.dataset.index;
-            likeButtonElement.addEventListener("click", (event) => {
-              event.stopPropagation();
-              if (!userComments[index].isLiked) {
-                userComments[index].isLiked = true;
-                userComments[index].active = "-active-like";
-                userComments[index].likeCounter += 1;
-              } else {
-                userComments[index].isLiked = false;
-                userComments[index].active = "";
-                userComments[index].likeCounter -= 1;
-              }
-              renderUserComments(userComments);
-            });
-          }
-        };
-
-      // Data from API
-    
-      fetchComments();
-
-
-     // Edit button
-
-     const initEditButton = (userComments) => {
-      const editButtonElements = document.querySelectorAll(".edit-button");
-      for (const editButtonElement of editButtonElements) {
-        const index = editButtonElement.dataset.index;
-        editButtonElement.addEventListener("click", (event) => {
-          event.stopPropagation();
-          if (!userComments[index].isEdit) {
-            userComments[index].isEdit = true;
+   const fetchCommentsAndRender = () => {
+    return fetchComments()
+      .then((responseData) => {
+        let userComments = responseData.comments.map((comment) => {
+        return {
+          name: comment.author.name,
+          date: new Date(comment.date).toLocaleString().slice(0, -3),
+          comment: comment.text,
+          likeCounter: 0,
+          isLiked: false,
+          active: "",
+          isEdit: false,
+          };
+      });
+    return renderApp(userComments, getCommentsList);
+      })
+      .then ((response) => {
+      //  comments-loader.style.display = none;
+      })
+      .catch((error) => {
+        if (error.message === "Сервер сломался") {
+          alert("Сервер сломался, попробуйте позже");
+          fetchComments();
+        } else if (error.message === "Нет авторизации") {          
+            console.log(error);
           } else {
-            userComments[index].isEdit = false;
+            alert('Кажется, у вас сломался интернет, попробуйте позже');
+            console.log(error);
           }
-          renderUserComments(userComments);
-        });
-      }
-    };
-
-     // Reply to a comment
-
-     const replyToComment = (userComments) => {
-      const commentElements = document.querySelectorAll(".comment");
-      for (const commentElement of commentElements) {
-        commentElement.addEventListener("click", () => {
-            let userName = commentElement.dataset.name;
-            let textComment = commentElement.dataset.text;
-            commentInputElement.value = userName +"\n" + textComment;
-        });
-      }
-    };
-
-    renderUserComments(userComments);
+      });
+      };
   
+    fetchCommentsAndRender();
+
 
     // Time function
     
-    function time () {
-    let myDate = new Date();
-    const months = ["01", "02", "03", "04", "05", "06","07", "08", "09", "10", "11", "12"];
-    let fullDate = myDate.getDate() + "." + months[myDate.getMonth()] + "." + myDate.getFullYear() + " " + myDate.getHours() +":" + myDate.getMinutes();
-    return fullDate;
-    }
+  //  function time () {
+  //  let myDate = new Date();
+  //  const months = ["01", "02", "03", "04", "05", "06","07", "08", "09", "10", "11", "12"];
+  //  let fullDate = myDate.getDate() + "." + months[myDate.getMonth()] + "." + myDate.getFullYear() + " " + myDate.getHours() +":" + myDate.getMinutes();
+  //  return fullDate;
+ //   }
 
-    
-
-     const addNewElementToList = () => {
-
-
-      // Validation data check
-
-      nameInputElement.classList.remove('error');
-       if (nameInputElement.value === "") {
-        nameInputElement.classList.add('error');
-        return;
-      }
-      commentInputElement.classList.remove('error');
-      if (commentInputElement.value === "") {
-        commentInputElement.classList.add('error');
-        return;
-      }
-
-      // Post from API
-
-        postComment();
-
-      //  renderUserComments();
-        
-     };
-
-
-     buttonElement.addEventListener("click", addNewElementToList);
-
-    // Validation form check for the button
-
-    const validateForm = () => {
-      if (nameInputElement.value === "") {
-        buttonElement.disabled = true;
-        return;
-      }
-  
-      if (commentInputElement.value === "") {
-        buttonElement.disabled = true;
-        return;
-      }
-
-      buttonElement.disabled = false;
-    };
-
-    nameInputElement.addEventListener("input", validateForm);
-    commentInputElement.addEventListener("input", validateForm);
-
-    // Enter button
-
-    document.addEventListener("keyup", (event) => {
-      console.log("keyup", `${event.code}`);
-      if (event.code === 'Enter') {
-        addNewElementToList();
-      }
-    });
-
-    // Delete button
-
-    deleteButtonElement.addEventListener("click", () => {
-      // const listComments = document.getElementById("list");
-      // listComments.lastChild.remove();
-
-      const comments = document.getElementById("list");
-      const lastIndex = comments.innerHTML.lastIndexOf('<li class="comment"');
-      comments.innerHTML = comments.innerHTML.slice(0, lastIndex);
-      initLikeButton();
-      initEditButton();
-    });
-    
+    export { fetchCommentsAndRender }
    
