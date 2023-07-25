@@ -1,14 +1,18 @@
 import { loginUser, registerUser } from "../api.js";
 import { fetchCommentsAndRender } from "../main.js";
+import { format } from "date-fns";
+
+export const now = new Date();
 
 export function renderLoginComponent({ userComments, appEl, setToken, setName, fetchComments }) {
     let isLoginMode = true;
 
    const userCommentsHtmlNotEdit = userComments.map((userComment, index) => {
+    const addDate = format(now(userComment.date), "YYYY-MM-DD hh.mm.ss");
         return `<li class="comment" data-index="${index}" data-name="${userComment.name}" data-text="${userComment.comment}">
         <div class="comment-header">
           <div>${userComment.name}</div>
-          <div>${userComment.date}</div>
+          <div>${format(now(userComment.date), "YYYY-MM-DD hh.mm.ss")}</div>
         </div>
         <div class="comment-body">
           <div style="white-space: pre-line" class="comment-text">
