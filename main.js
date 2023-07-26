@@ -3,7 +3,7 @@
 import { renderApp } from "./renderComments.js";
 import { getCommentsList } from "./listComments.js";
 import { fetchComments } from "./api.js";
-import { now } from "./components/login-component";
+import { format } from "date-fns";
 
 const buttonElement = document.getElementById("add-button");
 const deleteButtonElement = document.getElementById("delete-button");
@@ -25,7 +25,7 @@ const commentsLoading = document.querySelector('.data-loading');
         let userComments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
-          date: format(now(comment.date), "YYYY-MM-DD hh.mm.ss"),
+          date: format(new Date(comment.date), "yyyy-MM-dd hh.mm.ss"),
           comment: comment.text,
           likeCounter: 0,
           isLiked: false,

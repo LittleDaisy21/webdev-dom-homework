@@ -1,5 +1,6 @@
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
+import { format } from "date-fns";
 
 
 export function fetchComments () {

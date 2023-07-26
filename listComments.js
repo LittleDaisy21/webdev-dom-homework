@@ -1,11 +1,11 @@
 import { format } from "date-fns"
-import { now } from "./components/login-component";
+
 
 export const getCommentsList = (userComment, index) => {  
           return `<li class="comment" data-index="${index}" data-name="${userComment.name}" data-text="${userComment.comment}">
           <div class="comment-header">
             <div>${userComment.name}</div>
-            <div>${format(now(userComment.date), "YYYY-MM-DD hh.mm.ss")}</div>
+            <div>${userComment.date}</div>
           </div>
           <div class="comment-body">
             <div style="white-space: pre-line" class="comment-text">
