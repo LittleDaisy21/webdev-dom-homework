@@ -22,8 +22,6 @@ export function fetchComments () {
   })
 }
 
-    //fetchComments();
-
 
   export function postComment ({ text, token }) {
 
