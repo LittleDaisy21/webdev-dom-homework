@@ -1,6 +1,6 @@
 import { loginUser, registerUser } from "../api.js";
 import { fetchCommentsAndRender } from "../main.js";
-import { format } from "date-fns";
+
 
 export function renderLoginComponent({ userComments, appEl, setToken, setName, fetchComments }) {
     let isLoginMode = true;

@@ -1,5 +1,3 @@
-import { format } from "date-fns"
-
 
 export const getCommentsList = (userComment, index) => {  
           return `<li class="comment" data-index="${index}" data-name="${userComment.name}" data-text="${userComment.comment}">
